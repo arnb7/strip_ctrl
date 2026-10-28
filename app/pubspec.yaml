@@ -1,0 +1,27 @@
+name: stripctl
+description: "Offline Android and Fedora Linux BLE LED Strip Controller"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_riverpod: ^2.5.1
+  shared_preferences: ^2.2.3
+  flutter_blue_plus: ^1.34.4
+  permission_handler: ^11.3.1
+  led_core:
+    path: ../packages/led_core
+  image_picker: ^1.2.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
