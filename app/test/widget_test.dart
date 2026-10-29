@@ -175,4 +175,47 @@ void main() {
     expect(find.text('Protocol Verification Report'), findsOneWidget);
     expect(find.text('25/25 checks passed'), findsOneWidget);
   });
+
+  testWidgets(
+      'SettingsScreen displays Default style and reveals M3 colorful presets on toggle',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          diagnosticsProvider.overrideWith((ref) {
+            final notifier = DiagnosticsNotifier();
+            notifier.setUseFakeTransport(true);
+            return notifier;
+          }),
+        ],
+        child: const StripCtlApp(showOnboarding: false),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Tap Settings tab
+    final settingsFinder = find.text('Settings');
+    await tester.ensureVisible(settingsFinder);
+    await tester.tap(settingsFinder);
+    await tester.pumpAndSettle();
+
+    // Verify Default and M3 Expressive segments
+    expect(find.text('Default'), findsOneWidget);
+    expect(find.text('M3 Expressive'), findsOneWidget);
+
+    // Switch to M3 Expressive
+    await tester.tap(find.text('M3 Expressive'));
+    await tester.pumpAndSettle();
+
+    // Verify Expressive Colorful Themes section and presets are revealed
+    expect(find.text('Expressive Colorful Themes'), findsOneWidget);
+    expect(find.text('System Monet'), findsOneWidget);
+    expect(find.text('Electric Violet'), findsOneWidget);
+    expect(find.text('Sunset Blaze'), findsOneWidget);
+
+    // Tap Electric Violet preset
+    await tester.tap(find.text('Electric Violet'));
+    await tester.pumpAndSettle();
+  });
 }

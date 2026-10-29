@@ -85,8 +85,11 @@ class _ShellScreenState extends ConsumerState<ShellScreen> {
     final uiStyle = ref.watch(uiStyleProvider);
     final isExpressive = uiStyle == UiStyle.expressiveM3;
 
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF000000), // Pure AMOLED black
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -106,9 +109,16 @@ class _ShellScreenState extends ConsumerState<ShellScreen> {
               height: isExpressive ? 52 : 46,
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
-                color: isExpressive ? const Color(0xFF0B0B0E) : const Color(0xFF000000),
-                border: const Border(
-                  bottom: BorderSide(color: Color(0xFF1E1E22), width: 1),
+                color: isExpressive
+                    ? colorScheme.surfaceContainer
+                    : const Color(0xFF000000),
+                border: Border(
+                  bottom: BorderSide(
+                    color: isExpressive
+                        ? colorScheme.primary.withOpacity(0.20)
+                        : const Color(0xFF1E1E22),
+                    width: 1,
+                  ),
                 ),
               ),
               child: SingleChildScrollView(
@@ -125,7 +135,9 @@ class _ShellScreenState extends ConsumerState<ShellScreen> {
 
                     return Padding(
                       padding: EdgeInsets.only(
-                        right: index == _tabs.length - 1 ? 0 : (isExpressive ? 10 : 6),
+                        right: index == _tabs.length - 1
+                            ? 0
+                            : (isExpressive ? 10 : 6),
                       ),
                       child: Center(
                         child: InkWell(
@@ -140,13 +152,17 @@ class _ShellScreenState extends ConsumerState<ShellScreen> {
                             ),
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? const Color(0xFFF97316)
-                                  : (isExpressive ? const Color(0xFF141418) : Colors.transparent),
+                                  ? colorScheme.primary
+                                  : (isExpressive
+                                      ? colorScheme.surfaceContainerHigh
+                                      : Colors.transparent),
                               borderRadius: borderRadius,
                               border: Border.all(
                                 color: isSelected
-                                    ? const Color(0xFFF97316)
-                                    : (isExpressive ? const Color(0xFF27272A) : const Color(0xFF1E1E22)),
+                                    ? colorScheme.primary
+                                    : (isExpressive
+                                        ? colorScheme.primary.withOpacity(0.25)
+                                        : const Color(0xFF1E1E22)),
                                 width: 1,
                               ),
                             ),
@@ -157,8 +173,8 @@ class _ShellScreenState extends ConsumerState<ShellScreen> {
                                   tab.icon,
                                   size: isExpressive ? 16 : 14,
                                   color: isSelected
-                                      ? Colors.white
-                                      : const Color(0xFFA1A1AA),
+                                      ? colorScheme.onPrimary
+                                      : colorScheme.onSurface.withOpacity(0.65),
                                 ),
                                 const SizedBox(width: 6),
                                 Text(
@@ -169,8 +185,8 @@ class _ShellScreenState extends ConsumerState<ShellScreen> {
                                         ? FontWeight.bold
                                         : FontWeight.w500,
                                     color: isSelected
-                                        ? Colors.white
-                                        : const Color(0xFFA1A1AA),
+                                        ? colorScheme.onPrimary
+                                        : colorScheme.onSurface.withOpacity(0.70),
                                   ),
                                 ),
                               ],

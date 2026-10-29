@@ -42,7 +42,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ButtonSegment<UiStyle>(
                   value: UiStyle.workspace2,
                   icon: Icon(Icons.dashboard_customize_outlined),
-                  label: Text('Workspace 2'),
+                  label: Text('Default'),
                 ),
                 ButtonSegment<UiStyle>(
                   value: UiStyle.expressiveM3,
@@ -59,10 +59,102 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: Text(
-              'Switch between the classic compact Workspace 2 layout and the Google Material 3 Expressive squircle/pill design.',
+              'Switch between the classic compact Default AMOLED layout and the Google Material 3 Expressive squircle/pill design.',
               style: TextStyle(fontSize: 12, color: Colors.white54),
             ),
           ),
+
+          if (uiStyle == UiStyle.expressiveM3) ...[
+            const SizedBox(height: 16),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  Icon(Icons.color_lens_outlined, size: 16, color: Color(0xFFF97316)),
+                  SizedBox(width: 8),
+                  Text(
+                    'Expressive Colorful Themes',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      color: Color(0xFFF4F4F5),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: M3ThemePreset.values.map((preset) {
+                  final activePreset = ref.watch(m3ThemePresetProvider);
+                  final isSelected = activePreset == preset;
+                  final theme = Theme.of(context);
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Material(
+                      color: isSelected
+                          ? preset.primary.withOpacity(0.18)
+                          : theme.colorScheme.surfaceContainer,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        side: BorderSide(
+                          color: isSelected
+                              ? preset.primary
+                              : theme.colorScheme.outline.withOpacity(0.20),
+                          width: isSelected ? 2 : 1,
+                        ),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: ListTile(
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        leading: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [preset.primary, preset.secondary, preset.tertiary],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: preset.primary.withOpacity(0.40),
+                                blurRadius: 8,
+                              ),
+                            ],
+                          ),
+                          child: Icon(preset.icon, color: Colors.white, size: 20),
+                        ),
+                        title: Text(
+                          preset.title,
+                          style: TextStyle(
+                            fontWeight:
+                                isSelected ? FontWeight.bold : FontWeight.w500,
+                            color: isSelected ? Colors.white : const Color(0xFFF4F4F5),
+                          ),
+                        ),
+                        subtitle: Text(
+                          preset.description,
+                          style: const TextStyle(fontSize: 12, color: Colors.white60),
+                        ),
+                        trailing: isSelected
+                            ? Icon(Icons.check_circle, color: preset.primary, size: 22)
+                            : null,
+                        onTap: () {
+                          ref.read(m3ThemePresetProvider.notifier).setPreset(preset);
+                        },
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
 
           const Divider(height: 32),
 

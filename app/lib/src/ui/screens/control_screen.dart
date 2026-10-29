@@ -204,13 +204,8 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
             const SizedBox(height: 12),
 
             if (state.mode == ActiveLedMode.white) ...[
-              // White / CCT Card (Workspace2)
+              // White / CCT Card
               Card(
-                color: const Color(0xFF18181B),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  side: const BorderSide(color: Color(0xFF27272A)),
-                ),
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -318,13 +313,8 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
                 ),
               ),
             ] else ...[
-              // Color Wheel & Swatches Card (Workspace2)
+              // Color Wheel & Swatches Card
               Card(
-                color: const Color(0xFF18181B),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  side: const BorderSide(color: Color(0xFF27272A)),
-                ),
                 child: Padding(
                   padding: const EdgeInsets.all(18),
                   child: Column(
@@ -829,13 +819,8 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
 
             const SizedBox(height: 12),
 
-            // Brightness Card with Perceptual Curve (Workspace2)
+            // Brightness Card with Perceptual Curve
             Card(
-              color: const Color(0xFF18181B),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-                side: const BorderSide(color: Color(0xFF27272A)),
-              ),
               child: Padding(
                 padding: const EdgeInsets.all(18),
                 child: Column(

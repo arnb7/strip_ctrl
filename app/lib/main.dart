@@ -1,3 +1,4 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,18 +50,25 @@ class _StripCtlAppState extends ConsumerState<StripCtlApp> {
   Widget build(BuildContext context) {
     final state = ref.watch(deviceStateProvider);
     final uiStyle = ref.watch(uiStyleProvider);
+    final m3Preset = ref.watch(m3ThemePresetProvider);
     final accentColor = Color.fromARGB(255, state.r, state.g, state.b);
 
-    return MaterialApp(
-      title: 'StripCtl',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.amoledTheme(
-        accentColor: state.power ? accentColor : Colors.deepOrangeAccent,
-        style: uiStyle,
-      ),
-      home: _showOnboarding
-          ? OnboardingScreen(onFinish: _finishOnboarding)
-          : const ShellScreen(),
+    return DynamicColorBuilder(
+      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+        return MaterialApp(
+          title: 'StripCtl',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.buildTheme(
+            style: uiStyle,
+            accentColor: state.power ? accentColor : const Color(0xFFF97316),
+            systemDarkScheme: darkDynamic,
+            preset: m3Preset,
+          ),
+          home: _showOnboarding
+              ? OnboardingScreen(onFinish: _finishOnboarding)
+              : const ShellScreen(),
+        );
+      },
     );
   }
 }

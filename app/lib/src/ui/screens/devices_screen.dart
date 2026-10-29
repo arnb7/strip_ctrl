@@ -222,7 +222,6 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
 
           // Active Connection Status Card
           Card(
-            color: const Color(0xFF1E1E1E),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -302,7 +301,6 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
 
           // Direct MAC Address Connection Card (Quick Connect)
           Card(
-            color: const Color(0xFF1E1E1E),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -388,7 +386,6 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
 
           // Hardware Pin Sequence (RGB Order Wizard)
           Card(
-            color: const Color(0xFF1E1E1E),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -399,10 +396,14 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                       Icon(Icons.tune,
                           color: Colors.deepOrangeAccent, size: 20),
                       SizedBox(width: 8),
-                      Text(
-                        'Terminal Pin Order (Hardware Wizard)',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                      Expanded(
+                        child: Text(
+                          'Terminal Pin Order (Hardware Wizard)',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ],
                   ),
@@ -426,28 +427,52 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                       );
                     }).toList(),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 14),
                   Row(
                     children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red),
-                        onPressed: () => notifier.setRgb(255, 0, 0),
-                        child: const Text('Test Red'),
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFEF4444),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 10),
+                            visualDensity: VisualDensity.compact,
+                          ),
+                          onPressed: () => notifier.setRgb(255, 0, 0),
+                          child: const Text('Test Red',
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
+                        ),
                       ),
                       const SizedBox(width: 8),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green),
-                        onPressed: () => notifier.setRgb(0, 255, 0),
-                        child: const Text('Test Green'),
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF10B981),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 10),
+                            visualDensity: VisualDensity.compact,
+                          ),
+                          onPressed: () => notifier.setRgb(0, 255, 0),
+                          child: const Text('Test Green',
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
+                        ),
                       ),
                       const SizedBox(width: 8),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue),
-                        onPressed: () => notifier.setRgb(0, 0, 255),
-                        child: const Text('Test Blue'),
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF3B82F6),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 10),
+                            visualDensity: VisualDensity.compact,
+                          ),
+                          onPressed: () => notifier.setRgb(0, 0, 255),
+                          child: const Text('Test Blue',
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
+                        ),
                       ),
                     ],
                   ),
@@ -459,22 +484,30 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
 
           // Discovered Controllers Section Header
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Discovered Nearby Controllers',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              const Expanded(
+                child: Text(
+                  'Discovered Nearby Controllers',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
+              const SizedBox(width: 8),
               Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text('Show All',
                       style: TextStyle(fontSize: 12, color: Colors.white60)),
-                  Switch(
-                    value: _showAllDevices,
-                    onChanged: (val) {
-                      setState(() => _showAllDevices = val);
-                      _startScan();
-                    },
+                  const SizedBox(width: 4),
+                  Transform.scale(
+                    scale: 0.85,
+                    child: Switch(
+                      value: _showAllDevices,
+                      onChanged: (val) {
+                        setState(() => _showAllDevices = val);
+                        _startScan();
+                      },
+                    ),
                   ),
                 ],
               ),
