@@ -337,28 +337,24 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Perfectly Symmetrical 3-Column Header: [Color] | [Wheel / Sliders] | [#HEX Badge]
-                      Row(
-                        children: [
-                          const Expanded(
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.water_drop_outlined,
-                                      size: 18, color: Color(0xFFF97316)),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    'Color',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold, fontSize: 15),
-                                  ),
-                                ],
+                      // Responsive Symmetrical Header: Adapts dynamically to screen width
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          const titleWidget = Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.water_drop_outlined,
+                                  size: 18, color: Color(0xFFF97316)),
+                              SizedBox(width: 8),
+                              Text(
+                                'Color',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 15),
                               ),
-                            ),
-                          ),
-                          SegmentedButton<bool>(
+                            ],
+                          );
+
+                          final segmentedToggle = SegmentedButton<bool>(
                             showSelectedIcon: false,
                             style: SegmentedButton.styleFrom(
                               visualDensity: VisualDensity.compact,
@@ -388,51 +384,83 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
                             onSelectionChanged: (val) {
                               setState(() => _showSliders = val.first);
                             },
-                          ),
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF141416),
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: const Color(0xFF27272A)),
+                          );
+
+                          final hexBadge = Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF141416),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: const Color(0xFF27272A)),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 8,
+                                  height: 8,
+                                  decoration: BoxDecoration(
+                                    color: currentColor,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: currentColor.withValues(alpha: 0.6),
+                                        blurRadius: 4,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
+                                const SizedBox(width: 6),
+                                Text(
+                                  hexString,
+                                  style: const TextStyle(
+                                    fontFamily: 'monospace',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFFF4F4F5),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+
+                          // On narrow mobile devices (< 380px inner card), stack into two clean uncompressed rows
+                          if (constraints.maxWidth < 380) {
+                            return Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Container(
-                                      width: 8,
-                                      height: 8,
-                                      decoration: BoxDecoration(
-                                        color: currentColor,
-                                        shape: BoxShape.circle,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: currentColor.withOpacity(0.6),
-                                            blurRadius: 4,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      hexString,
-                                      style: const TextStyle(
-                                        fontFamily: 'monospace',
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFFF4F4F5),
-                                      ),
-                                    ),
+                                    titleWidget,
+                                    hexBadge,
                                   ],
                                 ),
-                              ),
-                            ),
-                          ),
-                        ],
+                                const SizedBox(height: 10),
+                                Center(child: segmentedToggle),
+                              ],
+                            );
+                          } else {
+                            return Row(
+                              children: [
+                                const Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: titleWidget,
+                                  ),
+                                ),
+                                segmentedToggle,
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: hexBadge,
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                        },
                       ),
                       const SizedBox(height: 12),
 
