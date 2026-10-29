@@ -174,6 +174,68 @@ class AudioVisualizerService {
     return _linuxStreamController.stream;
   }
 
+  Future<String?> _resolveSinkNodeId() async {
+    // 1. wpctl inspect @DEFAULT_AUDIO_SINK@
+    try {
+      final res = await Process.run('wpctl', ['inspect', '@DEFAULT_AUDIO_SINK@']);
+      if (res.exitCode == 0) {
+        final match = RegExp(r'id\s+(\d+)').firstMatch(res.stdout.toString());
+        if (match != null) return match.group(1);
+      }
+    } catch (_) {}
+
+    // 2. pactl list sinks short (matching default or RUNNING)
+    try {
+      final defaultRes = await Process.run('pactl', ['get-default-sink']);
+      final defaultName = defaultRes.stdout.toString().trim();
+
+      final res = await Process.run('pactl', ['list', 'sinks', 'short']);
+      if (res.exitCode == 0) {
+        final lines = res.stdout.toString().split('\n');
+        for (final line in lines) {
+          final parts = line.trim().split(RegExp(r'\s+'));
+          if (parts.length >= 2) {
+            if (defaultName.isNotEmpty && parts[1] == defaultName) {
+              return parts[0];
+            }
+            if (parts.contains('RUNNING')) {
+              return parts[0];
+            }
+          }
+        }
+      }
+    } catch (_) {}
+
+    return null;
+  }
+
+  Future<String?> _resolveSourceNodeId() async {
+    // 1. wpctl inspect @DEFAULT_AUDIO_SOURCE@
+    try {
+      final res = await Process.run('wpctl', ['inspect', '@DEFAULT_AUDIO_SOURCE@']);
+      if (res.exitCode == 0) {
+        final match = RegExp(r'id\s+(\d+)').firstMatch(res.stdout.toString());
+        if (match != null) return match.group(1);
+      }
+    } catch (_) {}
+
+    // 2. pactl list sources short (look for unmuted or RUNNING source)
+    try {
+      final res = await Process.run('pactl', ['list', 'sources', 'short']);
+      if (res.exitCode == 0) {
+        final lines = res.stdout.toString().split('\n');
+        for (final line in lines) {
+          final parts = line.trim().split(RegExp(r'\s+'));
+          if (parts.length >= 2 && !parts[1].contains('monitor')) {
+            if (parts.contains('RUNNING')) return parts[0];
+          }
+        }
+      }
+    } catch (_) {}
+
+    return null;
+  }
+
   Future<bool> startInternalAudio() async {
     if (Platform.isAndroid) {
       final status = await Permission.microphone.request();
@@ -191,17 +253,9 @@ class AudioVisualizerService {
     // Native Linux Desktop Audio capture via PipeWire / PulseAudio monitor
     await stopAudio();
     try {
-      String? defaultSink;
-      try {
-        final res = await Process.run('pactl', ['get-default-sink']);
-        if (res.exitCode == 0) {
-          final out = res.stdout.toString().trim();
-          if (out.isNotEmpty) defaultSink = out;
-        }
-      } catch (_) {}
-
+      final nodeId = await _resolveSinkNodeId();
       final args = <String>[
-        if (defaultSink != null) ...['--target', defaultSink],
+        if (nodeId != null) ...['--target', nodeId],
         '--raw',
         '--rate=16000',
         '--channels=1',
@@ -256,15 +310,19 @@ class AudioVisualizerService {
     // Native Linux Microphone capture via PipeWire / PulseAudio
     await stopAudio();
     try {
+      final nodeId = await _resolveSourceNodeId();
+      final args = <String>[
+        if (nodeId != null) ...['--target', nodeId],
+        '--raw',
+        '--rate=16000',
+        '--channels=1',
+        '--format=s16',
+        '-',
+      ];
+
       Process? proc;
       try {
-        proc = await Process.start('pw-record', [
-          '--raw',
-          '--rate=16000',
-          '--channels=1',
-          '--format=s16',
-          '-',
-        ]);
+        proc = await Process.start('pw-record', args);
       } catch (_) {
         try {
           proc = await Process.start('parec', [

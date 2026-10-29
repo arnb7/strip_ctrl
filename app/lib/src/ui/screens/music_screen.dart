@@ -25,7 +25,7 @@ class _MusicScreenState extends ConsumerState<MusicScreen>
   double _sensitivity = 1.0;
   String _mode = 'Rainbow'; // 'Rainbow', 'Beat Flash', 'Ocean Blue'
   AudioSourceMode _sourceMode = AudioSourceMode.internalAudio;
-  MusicProtocolMode _protocolMode = MusicProtocolMode.nativeMusic0x20;
+  MusicProtocolMode _protocolMode = MusicProtocolMode.dynamicRgb0x10;
 
   StreamSubscription<AudioFrame>? _audioSub;
   Timer? _simulatedTimer;
