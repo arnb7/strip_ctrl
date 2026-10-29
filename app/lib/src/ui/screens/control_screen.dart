@@ -21,24 +21,39 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
   final bool _usePerceptualBrightness = false;
   bool _showSliders = false;
 
-  // 16 Workspace2 Swatches
+  // 24 Curated High-Saturation LED Swatches (No muddy browns, greys, or uncalibrated off-whites)
   static const List<Color> _swatches = [
-    Color(0xFFFF3B30),
-    Color(0xFFFF9500),
-    Color(0xFFFFCC00),
-    Color(0xFF78DC64),
-    Color(0xFF34C759),
-    Color(0xFF00E1A0),
-    Color(0xFF32ADE6),
-    Color(0xFF5AC8FA),
-    Color(0xFFAF52DE),
-    Color(0xFFFF73DF),
-    Color(0xFFFF3897),
-    Color(0xFFAF7A5A),
-    Color(0xFF826953),
-    Color(0xFFFFD6AA),
-    Color(0xFFFFF7F0),
-    Color(0xFF787880),
+    // Row 1: Warm Spectrum (Reds, Corals, Oranges, Yellows)
+    Color(0xFFFF0000), // Pure Red
+    Color(0xFFFF1744), // Crimson
+    Color(0xFFFF5722), // Deep Coral / Orange-Red
+    Color(0xFFFF9100), // Vivid Amber Orange
+    Color(0xFFFFC400), // Golden Amber
+    Color(0xFFFFFF00), // Electric Yellow
+
+    // Row 2: Greens & Teals (Chartreuse, Lime, Pure Green, Emerald, Mint, Turquoise)
+    Color(0xFFAEEA00), // Chartreuse
+    Color(0xFF76FF03), // Neon Lime
+    Color(0xFF00FF00), // Pure Green
+    Color(0xFF00C853), // Emerald
+    Color(0xFF1DE9B6), // Mint Seafoam
+    Color(0xFF00F5D4), // Vibrant Turquoise
+
+    // Row 3: Cyans & Blues (Cyan, Ice Blue, Sky Blue, Electric Blue, Pure Blue, Royal Cobalt)
+    Color(0xFF00FFFF), // Pure Cyan
+    Color(0xFF00E5FF), // Ice Blue
+    Color(0xFF00B0FF), // Sky Blue
+    Color(0xFF2979FF), // Electric Blue
+    Color(0xFF0000FF), // Pure Blue
+    Color(0xFF304FFE), // Deep Royal Blue
+
+    // Row 4: Purples, Magentas & Pinks (Indigo, Violet, Purple, Magenta, Hot Pink, Rose)
+    Color(0xFF651FFF), // Electric Indigo
+    Color(0xFF7C4DFF), // Vivid Violet
+    Color(0xFFAA00FF), // Neon Purple
+    Color(0xFFFF00FF), // Pure Magenta
+    Color(0xFFFF1493), // Deep Hot Pink
+    Color(0xFFFF4081), // Radiant Rose Pink
   ];
 
   @override
@@ -478,43 +493,50 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
                       ],
                       const SizedBox(height: 16),
 
-                      // 16 Workspace2 Swatches
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        alignment: WrapAlignment.center,
-                        children: _swatches.map((c) {
-                          final isSelected =
-                              c.red == state.r && c.green == state.g && c.blue == state.b;
-                          return InkWell(
-                            onTap: () => _applyColor(c),
-                            borderRadius: BorderRadius.circular(20),
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 150),
-                              width: 34,
-                              height: 34,
-                              decoration: BoxDecoration(
-                                color: c,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: isSelected
-                                      ? Colors.white
-                                      : Colors.white.withValues(alpha: 0.2),
-                                  width: isSelected ? 3 : 1,
+                      // 24 Curated High-Saturation LED Swatches
+                      SizedBox(
+                        width: double.infinity,
+                        child: Center(
+                          child: Wrap(
+                            spacing: 8,
+                            runSpacing: 10,
+                            alignment: WrapAlignment.center,
+                            runAlignment: WrapAlignment.center,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: _swatches.map((c) {
+                              final isSelected =
+                                  c.red == state.r && c.green == state.g && c.blue == state.b;
+                              return InkWell(
+                                onTap: () => _applyColor(c),
+                                borderRadius: BorderRadius.circular(20),
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 150),
+                                  width: 36,
+                                  height: 36,
+                                  decoration: BoxDecoration(
+                                    color: c,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? Colors.white
+                                          : Colors.white.withValues(alpha: 0.2),
+                                      width: isSelected ? 3 : 1,
+                                    ),
+                                    boxShadow: isSelected
+                                        ? [
+                                            BoxShadow(
+                                              color: c.withValues(alpha: 0.6),
+                                              blurRadius: 8,
+                                              spreadRadius: 2,
+                                            )
+                                          ]
+                                        : null,
+                                  ),
                                 ),
-                                boxShadow: isSelected
-                                    ? [
-                                        BoxShadow(
-                                          color: c.withValues(alpha: 0.6),
-                                          blurRadius: 8,
-                                          spreadRadius: 2,
-                                        )
-                                      ]
-                                    : null,
-                              ),
-                            ),
-                          );
-                        }).toList(),
+                              );
+                            }).toList(),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 14),
 
@@ -751,24 +773,33 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
                               fontSize: 11, color: Color(0xFFA1A1AA)),
                         ),
                         const SizedBox(height: 8),
-                        Wrap(
-                          spacing: 8,
-                          children: _photoColors.map((c) {
-                            return InkWell(
-                              onTap: () => _applyColor(c),
-                              borderRadius: BorderRadius.circular(8),
-                              child: Container(
-                                width: 36,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                  color: c,
+                        SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              alignment: WrapAlignment.center,
+                              runAlignment: WrapAlignment.center,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: _photoColors.map((c) {
+                                return InkWell(
+                                  onTap: () => _applyColor(c),
                                   borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                      color: Colors.white.withValues(alpha: 0.2)),
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                                  child: Container(
+                                    width: 36,
+                                    height: 36,
+                                    decoration: BoxDecoration(
+                                      color: c,
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                          color: Colors.white.withValues(alpha: 0.2)),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ),
                         ),
                       ],
 
@@ -791,24 +822,33 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
                             ),
                           ],
                         ),
-                        Wrap(
-                          spacing: 8,
-                          children: _recents.map((c) {
-                            return InkWell(
-                              onTap: () => _applyColor(c),
-                              borderRadius: BorderRadius.circular(8),
-                              child: Container(
-                                width: 30,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  color: c,
+                        SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              alignment: WrapAlignment.center,
+                              runAlignment: WrapAlignment.center,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: _recents.map((c) {
+                                return InkWell(
+                                  onTap: () => _applyColor(c),
                                   borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                      color: Colors.white.withValues(alpha: 0.15)),
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                                  child: Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: c,
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                          color: Colors.white.withValues(alpha: 0.15)),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ),
                         ),
                       ],
                     ],

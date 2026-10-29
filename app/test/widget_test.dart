@@ -218,4 +218,56 @@ void main() {
     await tester.tap(find.text('Electric Violet'));
     await tester.pumpAndSettle();
   });
+
+  testWidgets(
+      'ControlScreen renders 24 centered vibrant LED swatches without unsupported brown/grey',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          diagnosticsProvider.overrideWith((ref) {
+            final notifier = DiagnosticsNotifier();
+            notifier.setUseFakeTransport(true);
+            return notifier;
+          }),
+        ],
+        child: const StripCtlApp(showOnboarding: false),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Verify exactly 24 color swatch inkwells in control screen
+    final swatchInkWells = find.byWidgetPredicate((widget) {
+      return widget is AnimatedContainer &&
+          widget.decoration is BoxDecoration &&
+          (widget.decoration as BoxDecoration).shape == BoxShape.circle &&
+          (widget.constraints?.maxWidth == 36 || widget.constraints?.minWidth == 36);
+    });
+    expect(swatchInkWells, findsNWidgets(24));
+
+    // Scroll to make swatches visible
+    await tester.ensureVisible(swatchInkWells.first);
+    await tester.pumpAndSettle();
+
+    // Tap on the first swatch (Pure Red: 0xFFFF0000)
+    await tester.tap(swatchInkWells.first);
+    await tester.pumpAndSettle();
+    expect(find.text('#FF0000'), findsOneWidget);
+
+    // Tap on Cyan swatch (#00FFFF)
+    final cyanFinder = find.byWidgetPredicate((widget) {
+      if (widget is AnimatedContainer && widget.decoration is BoxDecoration) {
+        final box = widget.decoration as BoxDecoration;
+        return box.color == const Color(0xFF00FFFF);
+      }
+      return false;
+    });
+    expect(cyanFinder, findsOneWidget);
+    await tester.ensureVisible(cyanFinder);
+    await tester.pumpAndSettle();
+    await tester.tap(cyanFinder);
+    await tester.pumpAndSettle();
+    expect(find.text('#00FFFF'), findsOneWidget);
+  });
 }

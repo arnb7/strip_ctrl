@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
 
 const List<Color> presetColors = <Color>[
-  Color(0xFFFF0000), // Red
-  Color(0xFF00FF00), // Green
-  Color(0xFF0000FF), // Blue
-  Color(0xFFFFFF00), // Yellow
-  Color(0xFF00FFFF), // Cyan
-  Color(0xFFFF00FF), // Magenta
-  Color(0xFFFF8800), // Orange
-  Color(0xFF8800FF), // Purple
-  Color(0xFFFF0088), // Pink
-  Color(0xFF00FF88), // Mint
-  Color(0xFF88FF00), // Lime
-  Color(0xFF0088FF), // Sky Blue
-  Color(0xFFFFD1A4), // Warm White
-  Color(0xFFE6F0FF), // Cool White
-  Color(0xFFFFFFFF), // Pure White
-  Color(0xFFFF4500), // Flame
+  Color(0xFFFF0000), // Pure Red
+  Color(0xFFFF1744), // Crimson
+  Color(0xFFFF5722), // Coral
+  Color(0xFFFF9100), // Vivid Orange
+  Color(0xFFFFC400), // Golden Amber
+  Color(0xFFFFFF00), // Electric Yellow
+  Color(0xFFAEEA00), // Chartreuse
+  Color(0xFF76FF03), // Neon Lime
+  Color(0xFF00FF00), // Pure Green
+  Color(0xFF00C853), // Emerald
+  Color(0xFF1DE9B6), // Mint Seafoam
+  Color(0xFF00F5D4), // Vibrant Turquoise
+  Color(0xFF00FFFF), // Pure Cyan
+  Color(0xFF00E5FF), // Ice Blue
+  Color(0xFF00B0FF), // Sky Blue
+  Color(0xFF2979FF), // Electric Blue
+  Color(0xFF0000FF), // Pure Blue
+  Color(0xFF304FFE), // Deep Royal Blue
+  Color(0xFF651FFF), // Electric Indigo
+  Color(0xFF7C4DFF), // Vivid Violet
+  Color(0xFFAA00FF), // Neon Purple
+  Color(0xFFFF00FF), // Pure Magenta
+  Color(0xFFFF1493), // Deep Hot Pink
+  Color(0xFFFF4081), // Radiant Rose Pink
 ];
 
 class ColorSwatches extends StatelessWidget {
