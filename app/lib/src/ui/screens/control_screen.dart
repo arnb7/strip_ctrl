@@ -437,20 +437,27 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
                       const SizedBox(height: 12),
 
                       if (!_showSliders) ...[
-                        // HSV Color Wheel (compact 220px to leave plenty of drag/scroll margins)
+                        // Adaptive HSV Color Wheel (290px on desktop, 220px on mobile)
                         Center(
                           child: RepaintBoundary(
-                            child: SizedBox(
-                              width: 220,
-                              height: 220,
-                              child: HsvColorWheel(
-                                currentColor: currentColor,
-                                power: state.power,
-                                onColorChanged: (c) {
-                                  _applyColor(c, remember: false);
-                                },
-                                onTogglePower: () => notifier.togglePower(),
-                              ),
+                            child: Builder(
+                              builder: (ctx) {
+                                final isDesktopWide =
+                                    MediaQuery.of(ctx).size.width >= 600;
+                                final wheelSize = isDesktopWide ? 290.0 : 220.0;
+                                return SizedBox(
+                                  width: wheelSize,
+                                  height: wheelSize,
+                                  child: HsvColorWheel(
+                                    currentColor: currentColor,
+                                    power: state.power,
+                                    onColorChanged: (c) {
+                                      _applyColor(c, remember: false);
+                                    },
+                                    onTogglePower: () => notifier.togglePower(),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),

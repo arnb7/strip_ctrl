@@ -64,6 +64,16 @@ class _StripCtlAppState extends ConsumerState<StripCtlApp> {
             systemDarkScheme: darkDynamic,
             preset: m3Preset,
           ),
+          builder: (context, child) {
+            final mediaQuery = MediaQuery.of(context);
+            final uiScale = ref.watch(desktopUiScaleProvider);
+            return MediaQuery(
+              data: mediaQuery.copyWith(
+                textScaler: TextScaler.linear(uiScale),
+              ),
+              child: child ?? const SizedBox.shrink(),
+            );
+          },
           home: _showOnboarding
               ? OnboardingScreen(onFinish: _finishOnboarding)
               : const ShellScreen(),

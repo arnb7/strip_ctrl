@@ -92,122 +92,130 @@ class _ShellScreenState extends ConsumerState<ShellScreen> {
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         bottom: false,
-        child: Column(
-          children: [
-            // Safe, unclipped Device Header
-            DeviceHeader(
-              onOpenDevices: () => setState(() => _currentIndex = 5),
-              showStrip: _showStrip,
-              onToggleStrip: () => setState(() => _showStrip = !_showStrip),
-            ),
-
-            // Top Hero Virtual LED Strip (collapsible to maximize viewport)
-            if (_showStrip) const StripDisplay(),
-
-            // Horizontal Tab Navigation Strip
-            Container(
-              height: isExpressive ? 52 : 46,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                color: isExpressive
-                    ? colorScheme.surfaceContainer
-                    : const Color(0xFF000000),
-                border: Border(
-                  bottom: BorderSide(
-                    color: isExpressive
-                        ? colorScheme.primary.withOpacity(0.20)
-                        : const Color(0xFF1E1E22),
-                    width: 1,
-                  ),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1040),
+            child: Column(
+              children: [
+                // Safe, unclipped Device Header
+                DeviceHeader(
+                  onOpenDevices: () => setState(() => _currentIndex = 5),
+                  showStrip: _showStrip,
+                  onToggleStrip: () => setState(() => _showStrip = !_showStrip),
                 ),
-              ),
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: List.generate(_tabs.length, (index) {
-                    final tab = _tabs[index];
-                    final isSelected = _currentIndex == index;
 
-                    final borderRadius = isExpressive
-                        ? BorderRadius.circular(20)
-                        : BorderRadius.circular(8);
+                // Top Hero Virtual LED Strip (collapsible to maximize viewport)
+                if (_showStrip) const StripDisplay(),
 
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        right: index == _tabs.length - 1
-                            ? 0
-                            : (isExpressive ? 10 : 6),
+                // Horizontal Tab Navigation Strip
+                Container(
+                  height: isExpressive ? 56 : 50,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: isExpressive
+                        ? colorScheme.surfaceContainer
+                        : const Color(0xFF000000),
+                    border: Border(
+                      bottom: BorderSide(
+                        color: isExpressive
+                            ? colorScheme.primary.withOpacity(0.20)
+                            : const Color(0xFF1E1E22),
+                        width: 1,
                       ),
-                      child: Center(
-                        child: InkWell(
-                          onTap: () => setState(() => _currentIndex = index),
-                          borderRadius: borderRadius,
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            curve: Curves.easeOutCubic,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: isExpressive ? 16 : 12,
-                              vertical: isExpressive ? 8 : 6,
+                    ),
+                  ),
+                  child: Center(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(_tabs.length, (index) {
+                          final tab = _tabs[index];
+                          final isSelected = _currentIndex == index;
+
+                          final borderRadius = isExpressive
+                              ? BorderRadius.circular(20)
+                              : BorderRadius.circular(10);
+
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              right: index == _tabs.length - 1
+                                  ? 0
+                                  : (isExpressive ? 10 : 6),
                             ),
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? colorScheme.primary
-                                  : (isExpressive
-                                      ? colorScheme.surfaceContainerHigh
-                                      : Colors.transparent),
-                              borderRadius: borderRadius,
-                              border: Border.all(
-                                color: isSelected
-                                    ? colorScheme.primary
-                                    : (isExpressive
-                                        ? colorScheme.primary.withOpacity(0.25)
-                                        : const Color(0xFF1E1E22)),
-                                width: 1,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  tab.icon,
-                                  size: isExpressive ? 16 : 14,
-                                  color: isSelected
-                                      ? colorScheme.onPrimary
-                                      : colorScheme.onSurface.withOpacity(0.65),
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  tab.title,
-                                  style: TextStyle(
-                                    fontSize: isExpressive ? 13 : 12,
-                                    fontWeight: isSelected
-                                        ? FontWeight.bold
-                                        : FontWeight.w500,
+                            child: Center(
+                              child: InkWell(
+                                onTap: () => setState(() => _currentIndex = index),
+                                borderRadius: borderRadius,
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  curve: Curves.easeOutCubic,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: isExpressive ? 16 : 13,
+                                    vertical: isExpressive ? 9 : 8,
+                                  ),
+                                  decoration: BoxDecoration(
                                     color: isSelected
-                                        ? colorScheme.onPrimary
-                                        : colorScheme.onSurface.withOpacity(0.70),
+                                        ? colorScheme.primary
+                                        : (isExpressive
+                                            ? colorScheme.surfaceContainerHigh
+                                            : Colors.transparent),
+                                    borderRadius: borderRadius,
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? colorScheme.primary
+                                          : (isExpressive
+                                              ? colorScheme.primary.withOpacity(0.25)
+                                              : const Color(0xFF1E1E22)),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        tab.icon,
+                                        size: isExpressive ? 18 : 16,
+                                        color: isSelected
+                                            ? colorScheme.onPrimary
+                                            : colorScheme.onSurface.withOpacity(0.65),
+                                      ),
+                                      const SizedBox(width: 7),
+                                      Text(
+                                        tab.title,
+                                        style: TextStyle(
+                                          fontSize: isExpressive ? 14 : 13,
+                                          fontWeight: isSelected
+                                              ? FontWeight.bold
+                                              : FontWeight.w500,
+                                          color: isSelected
+                                              ? colorScheme.onPrimary
+                                              : colorScheme.onSurface.withOpacity(0.70),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        }),
                       ),
-                    );
-                  }),
+                    ),
+                  ),
                 ),
-              ),
-            ),
 
-            // Main Active Tab Content
-            Expanded(
-              child: IndexedStack(
-                index: _currentIndex,
-                children: _screens,
-              ),
+                // Main Active Tab Content
+                Expanded(
+                  child: IndexedStack(
+                    index: _currentIndex,
+                    children: _screens,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -138,6 +138,12 @@ class DeviceStateNotifier extends StateNotifier<DeviceState> {
 
   Future<void> sendDirectMusicFrame(int r, int g, int b,
       {bool useMusicByte = true}) async {
+    state = state.copyWith(
+      mode: ActiveLedMode.music,
+      r: r,
+      g: g,
+      b: b,
+    );
     final (tr, tg, tb) = state.whiteBalanceTrim.apply(r, g, b);
     final (mr, mg, mb) = mapRgbForPinOrder(tr, tg, tb, state.pinOrder);
     await _safeSubmit(ColorCommand(mr, mg, mb, isMusic: useMusicByte));

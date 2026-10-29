@@ -65,6 +65,76 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
 
+          const SizedBox(height: 12),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
+            child: Row(
+              children: [
+                Icon(Icons.aspect_ratio_rounded, size: 16, color: Color(0xFFF97316)),
+                SizedBox(width: 8),
+                Text(
+                  'Display & Text Scale (1080p Comfort)',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    color: Color(0xFFF4F4F5),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            child: Consumer(
+              builder: (context, ref, _) {
+                final currentScale = ref.watch(desktopUiScaleProvider);
+                return SegmentedButton<double>(
+                  showSelectedIcon: false,
+                  segments: const [
+                    ButtonSegment<double>(
+                      value: 1.0,
+                      label: Text('1.0x (Compact)'),
+                    ),
+                    ButtonSegment<double>(
+                      value: 1.15,
+                      label: Text('1.15x (Standard)'),
+                    ),
+                    ButtonSegment<double>(
+                      value: 1.22,
+                      label: Text('1.22x (1080p Comfort)'),
+                    ),
+                    ButtonSegment<double>(
+                      value: 1.35,
+                      label: Text('1.35x (Large)'),
+                    ),
+                  ],
+                  selected: {
+                    if (currentScale <= 1.05)
+                      1.0
+                    else if (currentScale <= 1.18)
+                      1.15
+                    else if (currentScale <= 1.28)
+                      1.22
+                    else
+                      1.35
+                  },
+                  onSelectionChanged: (Set<double> newSelection) {
+                    ref
+                        .read(desktopUiScaleProvider.notifier)
+                        .setScale(newSelection.first);
+                  },
+                );
+              },
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: Text(
+              'Adjusts typography, button targets, and visual comfort across 1080p displays.',
+              style: TextStyle(fontSize: 12, color: Colors.white54),
+            ),
+          ),
+
           if (uiStyle == UiStyle.expressiveM3) ...[
             const SizedBox(height: 16),
             const Padding(

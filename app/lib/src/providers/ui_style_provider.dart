@@ -159,3 +159,33 @@ final m3ThemePresetProvider =
     StateNotifierProvider<M3PresetNotifier, M3ThemePreset>((ref) {
   return M3PresetNotifier();
 });
+
+class DesktopUiScaleNotifier extends StateNotifier<double> {
+  DesktopUiScaleNotifier() : super(1.22) {
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.getDouble('desktop_ui_scale');
+      if (saved != null && saved >= 0.8 && saved <= 2.0) {
+        state = saved;
+      }
+    } catch (_) {}
+  }
+
+  Future<void> setScale(double scale) async {
+    state = scale;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setDouble('desktop_ui_scale', scale);
+    } catch (_) {}
+  }
+}
+
+final desktopUiScaleProvider =
+    StateNotifierProvider<DesktopUiScaleNotifier, double>((ref) {
+  return DesktopUiScaleNotifier();
+});
+

@@ -208,6 +208,10 @@ void main() {
     await tester.tap(find.text('M3 Expressive'));
     await tester.pumpAndSettle();
 
+    // Scroll down to view revealed Expressive Colorful Themes presets
+    await tester.drag(find.byType(ListView), const Offset(0, -250));
+    await tester.pumpAndSettle();
+
     // Verify Expressive Colorful Themes section and presets are revealed
     expect(find.text('Expressive Colorful Themes'), findsOneWidget);
     expect(find.text('System Monet'), findsOneWidget);

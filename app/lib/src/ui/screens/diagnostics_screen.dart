@@ -46,37 +46,43 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Icon(
-                            result.allPass ? Icons.check_circle : Icons.error,
-                            color: result.allPass
-                                ? Colors.tealAccent
-                                : Colors.redAccent,
-                            size: 24,
-                          ),
-                          const SizedBox(width: 8),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Protocol Verification Report',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Icon(
+                              result.allPass ? Icons.check_circle : Icons.error,
+                              color: result.allPass
+                                  ? Colors.tealAccent
+                                  : Colors.redAccent,
+                              size: 24,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Protocol Verification Report',
+                                    style: TextStyle(
+                                        fontSize: 16, fontWeight: FontWeight.bold),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    result.summary,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: result.allPass
+                                          ? Colors.tealAccent
+                                          : Colors.redAccent,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
                               ),
-                              Text(
-                                result.summary,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: result.allPass
-                                      ? Colors.tealAccent
-                                      : Colors.redAccent,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
                       ),
                       IconButton(
                         icon: const Icon(Icons.close),

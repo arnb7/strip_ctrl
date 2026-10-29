@@ -350,41 +350,49 @@ class _MusicScreenState extends ConsumerState<MusicScreen>
                   ),
                   const SizedBox(height: 24),
 
-                  // Equalizer Bars
-                  SizedBox(
-                    height: 120,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: List.generate(28, (i) {
-                        final val = _equalizerBars[i];
-                        final barColor = HSVColor.fromAHSV(
-                          1.0,
-                          (i * 12.0) % 360,
-                          0.9,
-                          _isPlaying ? 1.0 : 0.3,
-                        ).toColor();
+                  // Equalizer Bars (adaptive 170px height on desktop, 120px on mobile)
+                  Builder(
+                    builder: (ctx) {
+                      final isWide = MediaQuery.of(ctx).size.width >= 600;
+                      final eqHeight = isWide ? 170.0 : 120.0;
+                      final barWidth = isWide ? 10.0 : 6.0;
 
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 35),
-                          width: 6,
-                          height: (120 * val).clamp(6.0, 120.0),
-                          decoration: BoxDecoration(
-                            color: barColor,
-                            borderRadius: BorderRadius.circular(3),
-                            boxShadow: _isPlaying && val > 0.5
-                                ? [
-                                    BoxShadow(
-                                      color: barColor.withValues(alpha: 0.5),
-                                      blurRadius: 6,
-                                      spreadRadius: 1,
-                                    )
-                                  ]
-                                : null,
-                          ),
-                        );
-                      }),
-                    ),
+                      return SizedBox(
+                        height: eqHeight,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: List.generate(28, (i) {
+                            final val = _equalizerBars[i];
+                            final barColor = HSVColor.fromAHSV(
+                              1.0,
+                              (i * 12.0) % 360,
+                              0.9,
+                              _isPlaying ? 1.0 : 0.3,
+                            ).toColor();
+
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 35),
+                              width: barWidth,
+                              height: (eqHeight * val).clamp(6.0, eqHeight),
+                              decoration: BoxDecoration(
+                                color: barColor,
+                                borderRadius: BorderRadius.circular(4),
+                                boxShadow: _isPlaying && val > 0.4
+                                    ? [
+                                        BoxShadow(
+                                          color: barColor.withValues(alpha: 0.5),
+                                          blurRadius: 8,
+                                          spreadRadius: 1,
+                                        )
+                                      ]
+                                    : null,
+                              ),
+                            );
+                          }),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 20),
 
@@ -433,7 +441,7 @@ class _MusicScreenState extends ConsumerState<MusicScreen>
                       ),
                       const SizedBox(height: 8),
                       const Text(
-                        'Select where audio is captured from. Internal Audio hooks directly into music playing on your phone (Spotify, YouTube, media players).',
+                        'Select where audio is captured from. System Desktop Audio hooks directly into media playback (Spotify, YouTube, browser, media players) via PipeWire/PulseAudio.',
                         style: TextStyle(fontSize: 12, color: Colors.white60),
                       ),
                       const SizedBox(height: 12),
@@ -443,7 +451,7 @@ class _MusicScreenState extends ConsumerState<MusicScreen>
                         children: [
                           ChoiceChip(
                             avatar: const Icon(Icons.speaker_group, size: 16),
-                            label: const Text('Internal Audio (Device)'),
+                            label: const Text('Desktop Audio (PipeWire/System)'),
                             selected: _sourceMode == AudioSourceMode.internalAudio,
                             onSelected: (selected) {
                               if (selected) {
@@ -455,7 +463,7 @@ class _MusicScreenState extends ConsumerState<MusicScreen>
                           ),
                           ChoiceChip(
                             avatar: const Icon(Icons.mic, size: 16),
-                            label: const Text('Phone Mic (Ambient)'),
+                            label: const Text('Microphone (Ambient)'),
                             selected: _sourceMode == AudioSourceMode.microphone,
                             onSelected: (selected) {
                               if (selected) {
