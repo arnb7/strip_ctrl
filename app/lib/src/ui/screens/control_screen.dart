@@ -177,44 +177,46 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 80),
         child: Column(
           children: [
-            // Mode Segmented Button (Color RGB vs White CCT)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SegmentedButton<ActiveLedMode>(
-                  style: SegmentedButton.styleFrom(
-                    backgroundColor: const Color(0xFF18181B),
-                    selectedBackgroundColor: const Color(0xFFF97316),
-                    selectedForegroundColor: Colors.white,
-                    side: const BorderSide(color: Color(0xFF27272A)),
-                  ),
-                  segments: const [
-                    ButtonSegment(
-                      value: ActiveLedMode.color,
-                      label: Text('Color RGB'),
-                      icon: Icon(Icons.palette_outlined),
-                    ),
-                    ButtonSegment(
-                      value: ActiveLedMode.white,
-                      label: Text('White CCT'),
-                      icon: Icon(Icons.wb_sunny_outlined),
-                    ),
-                  ],
-                  selected: {
-                    state.mode == ActiveLedMode.white
-                        ? ActiveLedMode.white
-                        : ActiveLedMode.color
-                  },
-                  onSelectionChanged: (newSelection) {
-                    final sel = newSelection.first;
-                    if (sel == ActiveLedMode.white) {
-                      notifier.setWhite(state.whiteWarm, state.whiteCold);
-                    } else {
-                      notifier.setRgb(state.r, state.g, state.b);
-                    }
-                  },
+            // Symmetrically Balanced Mode Segmented Button (Color RGB vs White CCT)
+            SizedBox(
+              width: double.infinity,
+              child: SegmentedButton<ActiveLedMode>(
+                showSelectedIcon: false,
+                style: SegmentedButton.styleFrom(
+                  backgroundColor: const Color(0xFF18181B),
+                  selectedBackgroundColor: const Color(0xFFF97316),
+                  selectedForegroundColor: Colors.white,
+                  side: const BorderSide(color: Color(0xFF27272A)),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
                 ),
-              ],
+                segments: const [
+                  ButtonSegment(
+                    value: ActiveLedMode.color,
+                    label: Text('Color RGB',
+                        style: TextStyle(fontWeight: FontWeight.w600)),
+                    icon: Icon(Icons.palette_outlined),
+                  ),
+                  ButtonSegment(
+                    value: ActiveLedMode.white,
+                    label: Text('White CCT',
+                        style: TextStyle(fontWeight: FontWeight.w600)),
+                    icon: Icon(Icons.wb_sunny_outlined),
+                  ),
+                ],
+                selected: {
+                  state.mode == ActiveLedMode.white
+                      ? ActiveLedMode.white
+                      : ActiveLedMode.color
+                },
+                onSelectionChanged: (newSelection) {
+                  final sel = newSelection.first;
+                  if (sel == ActiveLedMode.white) {
+                    notifier.setWhite(state.whiteWarm, state.whiteCold);
+                  } else {
+                    notifier.setRgb(state.r, state.g, state.b);
+                  }
+                },
+              ),
             ),
             const SizedBox(height: 12),
 
@@ -335,57 +337,100 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Perfectly Symmetrical 3-Column Header: [Color] | [Wheel / Sliders] | [#HEX Badge]
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Row(
-                            children: [
-                              Icon(Icons.water_drop_outlined,
-                                  size: 18, color: Color(0xFFF97316)),
-                              SizedBox(width: 8),
-                              Text(
-                                'Color',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 15),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              SegmentedButton<bool>(
-                                style: SegmentedButton.styleFrom(
-                                  visualDensity: VisualDensity.compact,
-                                  backgroundColor: const Color(0xFF09090B),
-                                  selectedBackgroundColor: const Color(0xFFF97316),
-                                  selectedForegroundColor: Colors.white,
-                                  side: const BorderSide(color: Color(0xFF27272A)),
-                                ),
-                                segments: const [
-                                  ButtonSegment(
-                                    value: false,
-                                    label: Text('Wheel', style: TextStyle(fontSize: 11)),
-                                  ),
-                                  ButtonSegment(
-                                    value: true,
-                                    label: Text('Sliders', style: TextStyle(fontSize: 11)),
+                          const Expanded(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.water_drop_outlined,
+                                      size: 18, color: Color(0xFFF97316)),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'Color',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold, fontSize: 15),
                                   ),
                                 ],
-                                selected: {_showSliders},
-                                onSelectionChanged: (val) {
-                                  setState(() => _showSliders = val.first);
-                                },
                               ),
-                              const SizedBox(width: 8),
-                              Text(
-                                hexString,
-                                style: const TextStyle(
-                                  fontFamily: 'monospace',
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFFA1A1AA),
-                                ),
+                            ),
+                          ),
+                          SegmentedButton<bool>(
+                            showSelectedIcon: false,
+                            style: SegmentedButton.styleFrom(
+                              visualDensity: VisualDensity.compact,
+                              backgroundColor: const Color(0xFF09090B),
+                              selectedBackgroundColor: const Color(0xFFF97316),
+                              selectedForegroundColor: Colors.white,
+                              side: const BorderSide(color: Color(0xFF27272A)),
+                              padding: const EdgeInsets.symmetric(horizontal: 14),
+                            ),
+                            segments: const [
+                              ButtonSegment(
+                                value: false,
+                                label: Text('Wheel',
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w600)),
+                              ),
+                              ButtonSegment(
+                                value: true,
+                                label: Text('Sliders',
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w600)),
                               ),
                             ],
+                            selected: {_showSliders},
+                            onSelectionChanged: (val) {
+                              setState(() => _showSliders = val.first);
+                            },
+                          ),
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF141416),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: const Color(0xFF27272A)),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      width: 8,
+                                      height: 8,
+                                      decoration: BoxDecoration(
+                                        color: currentColor,
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: currentColor.withOpacity(0.6),
+                                            blurRadius: 4,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      hexString,
+                                      style: const TextStyle(
+                                        fontFamily: 'monospace',
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFFF4F4F5),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -652,46 +697,54 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
                                 const Text(
                                   'Test Output:',
                                   style: TextStyle(
-                                      fontSize: 11, color: Color(0xFF71717A)),
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xFF71717A)),
                                 ),
                                 const SizedBox(width: 8),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red.shade800,
-                                    foregroundColor: Colors.white,
-                                    visualDensity: VisualDensity.compact,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 4),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red.shade800,
+                                      foregroundColor: Colors.white,
+                                      visualDensity: VisualDensity.compact,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4, vertical: 4),
+                                    ),
+                                    onPressed: () => notifier.setRgb(255, 0, 0),
+                                    child: const Text('Test R',
+                                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                                   ),
-                                  onPressed: () => notifier.setRgb(255, 0, 0),
-                                  child: const Text('Test R',
-                                      style: TextStyle(fontSize: 11)),
                                 ),
                                 const SizedBox(width: 6),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green.shade800,
-                                    foregroundColor: Colors.white,
-                                    visualDensity: VisualDensity.compact,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 4),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green.shade800,
+                                      foregroundColor: Colors.white,
+                                      visualDensity: VisualDensity.compact,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4, vertical: 4),
+                                    ),
+                                    onPressed: () => notifier.setRgb(0, 255, 0),
+                                    child: const Text('Test G',
+                                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                                   ),
-                                  onPressed: () => notifier.setRgb(0, 255, 0),
-                                  child: const Text('Test G',
-                                      style: TextStyle(fontSize: 11)),
                                 ),
                                 const SizedBox(width: 6),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.blue.shade800,
-                                    foregroundColor: Colors.white,
-                                    visualDensity: VisualDensity.compact,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 4),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue.shade800,
+                                      foregroundColor: Colors.white,
+                                      visualDensity: VisualDensity.compact,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4, vertical: 4),
+                                    ),
+                                    onPressed: () => notifier.setRgb(0, 0, 255),
+                                    child: const Text('Test B',
+                                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                                   ),
-                                  onPressed: () => notifier.setRgb(0, 0, 255),
-                                  child: const Text('Test B',
-                                      style: TextStyle(fontSize: 11)),
                                 ),
                               ],
                             ),
@@ -700,66 +753,75 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
                       ),
                       const SizedBox(height: 14),
 
-                      // Hex Input + Apply + Photo button
+                      // Hex Input + Apply + Photo button (Symmetrically Aligned)
                       Row(
                         children: [
                           Expanded(
-                            child: TextField(
-                              controller: _hexController,
-                              style: const TextStyle(
-                                  fontSize: 13,
-                                  fontFamily: 'monospace',
-                                  color: Colors.white),
-                              decoration: InputDecoration(
-                                hintText: '#RRGGBB',
-                                hintStyle:
-                                    const TextStyle(color: Color(0xFF71717A)),
-                                prefixIcon: const Icon(Icons.tag,
-                                    size: 16, color: Color(0xFF71717A)),
-                                filled: true,
-                                fillColor: const Color(0xFF09090B),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 10),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide:
-                                      const BorderSide(color: Color(0xFF27272A)),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide:
-                                      const BorderSide(color: Color(0xFF27272A)),
+                            child: SizedBox(
+                              height: 42,
+                              child: TextField(
+                                controller: _hexController,
+                                style: const TextStyle(
+                                    fontSize: 13,
+                                    fontFamily: 'monospace',
+                                    color: Colors.white),
+                                decoration: InputDecoration(
+                                  hintText: '#RRGGBB',
+                                  hintStyle:
+                                      const TextStyle(color: Color(0xFF71717A)),
+                                  prefixIcon: const Icon(Icons.tag,
+                                      size: 16, color: Color(0xFF71717A)),
+                                  filled: true,
+                                  fillColor: const Color(0xFF09090B),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 10),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide:
+                                        const BorderSide(color: Color(0xFF27272A)),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide:
+                                        const BorderSide(color: Color(0xFF27272A)),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                           const SizedBox(width: 8),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF27272A),
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 14, vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
+                          SizedBox(
+                            height: 42,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF27272A),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                              ),
+                              onPressed: _onHexSubmit,
+                              child: const Text('Apply'),
                             ),
-                            onPressed: _onHexSubmit,
-                            child: const Text('Apply'),
                           ),
                           const SizedBox(width: 8),
-                          OutlinedButton.icon(
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              side: const BorderSide(color: Color(0xFF27272A)),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
+                          SizedBox(
+                            height: 42,
+                            child: OutlinedButton.icon(
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                side: const BorderSide(color: Color(0xFF27272A)),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                              ),
+                              icon: const Icon(Icons.camera_alt_outlined,
+                                  size: 16),
+                              label: const Text('Photo'),
+                              onPressed: _pickPhoto,
                             ),
-                            icon: const Icon(Icons.camera_alt_outlined,
-                                size: 16),
-                            label: const Text('Photo'),
-                            onPressed: _pickPhoto,
                           ),
                         ],
                       ),

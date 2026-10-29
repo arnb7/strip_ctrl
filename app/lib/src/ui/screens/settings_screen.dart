@@ -38,6 +38,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: SegmentedButton<UiStyle>(
+              showSelectedIcon: false,
               segments: const [
                 ButtonSegment<UiStyle>(
                   value: UiStyle.workspace2,
