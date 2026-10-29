@@ -356,6 +356,17 @@ class AudioVisualizerService {
     _linuxAudioSub = stdout.listen(
       (chunk) {
         _pcmBuffer.add(chunk);
+
+        // If buffer accumulated backlog, discard stale bytes to prevent latency and memory loop
+        if (_pcmBuffer.length > frameByteLength * 4) {
+          final allBytes = _pcmBuffer.takeBytes();
+          final recentBytes = Uint8List.sublistView(
+            allBytes,
+            allBytes.length - (frameByteLength * 2),
+          );
+          _pcmBuffer.add(recentBytes);
+        }
+
         while (_pcmBuffer.length >= frameByteLength) {
           final allBytes = _pcmBuffer.takeBytes();
           final frameBytes = Uint8List.sublistView(allBytes, 0, frameByteLength);

@@ -23,3 +23,9 @@ app/android/app/build/
 # Logs & temp
 *.log
 .DS_Store
+
+# Release builds
+release_android/
+release_fedora_x64/
+*.AppImage
+app/stripctl/

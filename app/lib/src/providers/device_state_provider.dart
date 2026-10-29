@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:led_core/led_core.dart';
@@ -6,6 +7,7 @@ import 'transport_provider.dart';
 
 class DeviceStateNotifier extends StateNotifier<DeviceState> {
   final CommandScheduler scheduler;
+  Timer? _persistDebounce;
 
   DeviceStateNotifier(this.scheduler)
       : super(const DeviceState(
@@ -56,21 +58,24 @@ class DeviceStateNotifier extends StateNotifier<DeviceState> {
     } catch (_) {}
   }
 
-  Future<void> _persistState() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('pin_order', state.pinOrder);
-      await prefs.setInt('saved_r', state.r);
-      await prefs.setInt('saved_g', state.g);
-      await prefs.setInt('saved_b', state.b);
-      await prefs.setInt('saved_brightness', state.brightness);
-      await prefs.setBool('saved_power', state.power);
-      await prefs.setInt('saved_mode', state.mode.index);
-      await prefs.setInt('saved_warm', state.whiteWarm);
-      await prefs.setInt('saved_cold', state.whiteCold);
-      await prefs.setInt('saved_effect', state.effectIndex);
-      await prefs.setInt('saved_speed', state.speed);
-    } catch (_) {}
+  void _persistState() {
+    _persistDebounce?.cancel();
+    _persistDebounce = Timer(const Duration(milliseconds: 500), () async {
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('pin_order', state.pinOrder);
+        await prefs.setInt('saved_r', state.r);
+        await prefs.setInt('saved_g', state.g);
+        await prefs.setInt('saved_b', state.b);
+        await prefs.setInt('saved_brightness', state.brightness);
+        await prefs.setBool('saved_power', state.power);
+        await prefs.setInt('saved_mode', state.mode.index);
+        await prefs.setInt('saved_warm', state.whiteWarm);
+        await prefs.setInt('saved_cold', state.whiteCold);
+        await prefs.setInt('saved_effect', state.effectIndex);
+        await prefs.setInt('saved_speed', state.speed);
+      } catch (_) {}
+    });
   }
 
   static (int, int, int) mapRgbForPinOrder(int r, int g, int b, String order) {
@@ -245,6 +250,12 @@ class DeviceStateNotifier extends StateNotifier<DeviceState> {
       speed: scene.speed,
     );
     syncStripToApp();
+  }
+
+  @override
+  void dispose() {
+    _persistDebounce?.cancel();
+    super.dispose();
   }
 }
 

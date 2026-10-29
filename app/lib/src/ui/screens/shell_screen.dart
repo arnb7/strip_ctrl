@@ -210,7 +210,9 @@ class _ShellScreenState extends ConsumerState<ShellScreen> {
                 Expanded(
                   child: IndexedStack(
                     index: _currentIndex,
-                    children: _screens,
+                    children: _screens
+                        .map((screen) => RepaintBoundary(child: screen))
+                        .toList(),
                   ),
                 ),
               ],

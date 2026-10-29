@@ -31,15 +31,16 @@ class StripDisplay extends ConsumerWidget {
       modeIcon = Icons.auto_awesome;
     }
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      height: 95,
-      decoration: BoxDecoration(
-        color: const Color(0xFF141416),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFF27272A), width: 1),
-      ),
-      child: Stack(
+    return RepaintBoundary(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        height: 95,
+        decoration: BoxDecoration(
+          color: const Color(0xFF141416),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: const Color(0xFF27272A), width: 1),
+        ),
+        child: Stack(
         children: [
           // Custom Canvas Painter for ambient glow and LED dots
           Positioned.fill(
@@ -150,7 +151,8 @@ class StripDisplay extends ConsumerWidget {
           ),
         ],
       ),
-    );
+    ),
+  );
   }
 }
 

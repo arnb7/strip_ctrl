@@ -340,36 +340,62 @@ class _EffectsScreenState extends ConsumerState<EffectsScreen> {
                     child: Column(
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              children: [
-                                const Icon(Icons.auto_awesome,
-                                    color: Colors.deepOrangeAccent, size: 22),
-                                const SizedBox(width: 10),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      activeEffect?.name ?? 'No Effect Active',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15),
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.auto_awesome,
+                                      color: Colors.deepOrangeAccent, size: 22),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          activeEffect?.name ??
+                                              'No Effect Active',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14),
+                                        ),
+                                        Text(
+                                          state.mode == ActiveLedMode.effect
+                                              ? 'Active (Hardware MCU) • Index ${state.effectIndex}'
+                                              : 'Paused (RGB mode active)',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                              fontSize: 11,
+                                              color: Colors.white54),
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                      state.mode == ActiveLedMode.effect
-                                          ? 'Active (Hardware MCU) • Index ${state.effectIndex}'
-                                          : 'Paused (RGB mode active)',
-                                      style: const TextStyle(
-                                          fontSize: 12, color: Colors.white54),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                  ),
+                                ],
+                              ),
                             ),
-                            Text('${state.speed}% Speed',
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF27272A),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Colors.white12),
+                              ),
+                              child: Text(
+                                '${state.speed}%',
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.w600)),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                  fontFamily: 'monospace',
+                                  color: Color(0xFFF97316),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 8),

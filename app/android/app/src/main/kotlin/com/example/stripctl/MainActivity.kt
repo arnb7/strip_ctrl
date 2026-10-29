@@ -27,6 +27,7 @@ class MainActivity : FlutterActivity() {
     private var audioRecord: AudioRecord? = null
     private var eventSink: EventChannel.EventSink? = null
     private val mainHandler = Handler(Looper.getMainLooper())
+    private var lastEventTime = 0L
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -79,18 +80,7 @@ class MainActivity : FlutterActivity() {
 
             vis.setDataCaptureListener(object : Visualizer.OnDataCaptureListener {
                 override fun onWaveFormDataCapture(v: Visualizer?, waveform: ByteArray?, samplingRate: Int) {
-                    if (waveform == null || waveform.isEmpty()) return
-
-                    // Waveform: 8-bit unsigned PCM centered around 128
-                    var sumSquares = 0.0
-                    for (b in waveform) {
-                        val sample = (b.toInt() and 0xFF) - 128
-                        sumSquares += (sample * sample).toDouble()
-                    }
-                    val rms = sqrt(sumSquares / waveform.size) // 0..128
-                    val volume = (rms / 64.0).coerceIn(0.0, 1.0)
-
-                    sendAudioEvent(volume, null, volume)
+                    // Ignored: FFT capture provides complete frequency analysis and volume
                 }
 
                 override fun onFftDataCapture(v: Visualizer?, fft: ByteArray?, samplingRate: Int) {
@@ -131,7 +121,7 @@ class MainActivity : FlutterActivity() {
 
                     sendAudioEvent(normalizedEnergy, bands.toList(), normalizedBass)
                 }
-            }, Visualizer.getMaxCaptureRate() / 2, true, true)
+            }, Visualizer.getMaxCaptureRate() / 2, false, true)
 
             vis.enabled = true
             visualizer = vis
@@ -210,6 +200,12 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun sendAudioEvent(energy: Double, bands: List<Double>?, bass: Double = energy) {
+        val now = android.os.SystemClock.elapsedRealtime()
+        if (now - lastEventTime < 33) {
+            return
+        }
+        lastEventTime = now
+
         val payload = HashMap<String, Any>()
         payload["energy"] = energy
         payload["bass"] = bass
