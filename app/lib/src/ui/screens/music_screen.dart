@@ -32,21 +32,27 @@ class _MusicScreenState extends ConsumerState<MusicScreen>
 
   final List<double> _equalizerBars = List<double>.filled(28, 0.08);
   double _simPhase = 0.0;
+  double _liveHue = 0.0;
   int _colorIndex = 0;
 
   double _rollingBassAvg = 0.2;
   DateTime _lastBeatTime = DateTime.fromMillisecondsSinceEpoch(0);
   DateTime _lastDispatchTime = DateTime.fromMillisecondsSinceEpoch(0);
 
-  // Classic Duoco Strip music cycle palette
+  // High-saturation neon color palette for vivid beat flashes
   static const List<Color> _duocoColors = [
-    Color(0xFFFF0000), // Red
-    Color(0xFF00FF00), // Green
-    Color(0xFF0000FF), // Blue
-    Color(0xFFFFFF00), // Yellow
-    Color(0xFFFF00FF), // Magenta
-    Color(0xFF00FFFF), // Cyan
-    Color(0xFFFFFFFF), // White
+    Color(0xFFFF0055), // Hot Neon Red
+    Color(0xFFFF5500), // Electric Orange
+    Color(0xFFFFD600), // Radiant Gold
+    Color(0xFF00FF66), // Neon Mint
+    Color(0xFF00F5D4), // Electric Cyan
+    Color(0xFF0088FF), // Vivid Sky Blue
+    Color(0xFF7928CA), // Electric Violet
+    Color(0xFFFF00CC), // Hot Magenta
+    Color(0xFF00E5FF), // Aqua Blue
+    Color(0xFFFF1493), // Deep Neon Pink
+    Color(0xFF9D00FF), // Deep Purple
+    Color(0xFFFF3366), // Coral Crimson
   ];
 
   Color _currentActiveColor = const Color(0xFFFF0055);
@@ -179,24 +185,30 @@ class _MusicScreenState extends ConsumerState<MusicScreen>
     if (isBeat) {
       _lastBeatTime = now;
       _colorIndex = (_colorIndex + 1) % _duocoColors.length;
+      // On beat drop: transient leap of +42 degrees across color wheel
+      _liveHue = (_liveHue + 42.0) % 360.0;
+    } else {
+      // Continuous smooth color cycle driven by frame energy
+      _liveHue = (_liveHue + 1.2 + (energy * 3.8)) % 360.0;
     }
 
     // Compute RGB color based on selected reactive mode
     Color targetColor;
     if (_mode == 'Rainbow') {
-      final hue = ((_simPhase * 40 + energy * 180) % 360).toDouble();
+      // Full 360-degree chromatic spectrum with beat-reactive brightness
+      final brightness = (energy * 0.75 + 0.25).clamp(0.2, 1.0);
       targetColor = HSVColor.fromAHSV(
         1.0,
-        hue,
+        _liveHue,
         1.0,
-        energy.clamp(0.2, 1.0),
+        brightness,
       ).toColor();
     } else if (_mode == 'Beat Flash') {
       if (isBeat) {
         targetColor = _duocoColors[_colorIndex];
       } else {
-        final decay = (timeSinceLastBeat < 400)
-            ? (1.0 - (timeSinceLastBeat / 400.0))
+        final decay = (timeSinceLastBeat < 450)
+            ? (1.0 - (timeSinceLastBeat / 450.0))
             : 0.15;
         final base = _duocoColors[_colorIndex];
         targetColor = Color.fromRGBO(
@@ -206,6 +218,28 @@ class _MusicScreenState extends ConsumerState<MusicScreen>
           1.0,
         );
       }
+    } else if (_mode == 'Cyberpunk') {
+      // High-energy Neon Cyan vs Hot Pink/Magenta alternating on beat
+      final isPinkPhase = (_colorIndex % 2 == 0);
+      final baseHue = isPinkPhase ? 320.0 : 185.0; // 320=Hot Pink, 185=Electric Cyan
+      final shift = (energy * 30.0) * (isPinkPhase ? -1 : 1);
+      final finalHue = (baseHue + shift + 360.0) % 360.0;
+      targetColor = HSVColor.fromAHSV(
+        1.0,
+        finalHue,
+        1.0,
+        (energy * 0.8 + 0.2).clamp(0.2, 1.0),
+      ).toColor();
+    } else if (_mode == 'Fire & Amber') {
+      // Fiery palette: Deep crimson red to brilliant amber-yellow
+      final fireHue = (bass * 48.0).clamp(0.0, 52.0); // 0=Red, 52=Golden Amber
+      final fireVal = (energy * 0.8 + 0.2).clamp(0.2, 1.0);
+      targetColor = HSVColor.fromAHSV(
+        1.0,
+        fireHue,
+        1.0,
+        fireVal,
+      ).toColor();
     } else {
       // Ocean Blue mode
       final brightness = (bass * 0.8 + energy * 0.2).clamp(0.15, 1.0);
@@ -588,8 +622,13 @@ class _MusicScreenState extends ConsumerState<MusicScreen>
                       const SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
-                        children:
-                            ['Rainbow', 'Beat Flash', 'Ocean Blue'].map((m) {
+                        children: [
+                          'Rainbow',
+                          'Beat Flash',
+                          'Cyberpunk',
+                          'Fire & Amber',
+                          'Ocean Blue',
+                        ].map((m) {
                           final isSelected = _mode == m;
                           return ChoiceChip(
                             label: Text(m),
