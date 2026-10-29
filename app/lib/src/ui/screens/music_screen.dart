@@ -310,7 +310,7 @@ class _MusicScreenState extends ConsumerState<MusicScreen>
             // Live Equalizer Visualizer Canvas Card
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16),
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
               decoration: BoxDecoration(
                 color: const Color(0xFF141414),
                 borderRadius: BorderRadius.circular(20),
@@ -333,56 +333,64 @@ class _MusicScreenState extends ConsumerState<MusicScreen>
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.graphic_eq,
-                            color: _isPlaying
-                                ? Colors.greenAccent
-                                : Colors.white38,
-                            size: 24,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            _isPlaying
-                                ? (_sourceMode == AudioSourceMode.internalAudio
-                                    ? 'Internal Audio Active'
-                                    : _sourceMode == AudioSourceMode.microphone
-                                        ? 'Microphone Active'
-                                        : 'Demo Beat Active')
-                                : 'Music Reactive Paused',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.graphic_eq,
                               color: _isPlaying
                                   ? Colors.greenAccent
-                                  : Colors.white60,
+                                  : Colors.white38,
+                              size: 20,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                _isPlaying
+                                    ? (_sourceMode == AudioSourceMode.internalAudio
+                                        ? 'Internal Audio Active'
+                                        : _sourceMode == AudioSourceMode.microphone
+                                            ? 'Microphone Active'
+                                            : 'Demo Beat Active')
+                                    : 'Music Reactive Paused',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                  color: _isPlaying
+                                      ? Colors.greenAccent
+                                      : Colors.white60,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                      const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 3),
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.white10,
+                          color: const Color(0xFF27272A),
                           borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.white12),
                         ),
                         child: Text(
                           _protocolMode == MusicProtocolMode.nativeMusic0x20
                               ? 'CMD 05 (0x20)'
                               : 'CMD 05 (0x10)',
                           style: const TextStyle(
-                              fontSize: 10,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
                               color: Colors.white70,
                               fontFamily: 'monospace'),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
 
                   // Equalizer Bars (adaptive 170px height on desktop, 120px on mobile)
                   Builder(

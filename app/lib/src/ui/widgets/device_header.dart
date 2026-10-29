@@ -73,18 +73,19 @@ class DeviceHeader extends ConsumerWidget {
                   ),
                 ),
                 Text(
-                  'offline BLE LED controller',
+                  'Offline BLE Controller',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 10,
+                    letterSpacing: -0.2,
                     color: Color(0xFFA1A1AA),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 6),
 
           // Right Controls Row (Status Pill + Collapse + Power)
           Row(
@@ -96,7 +97,7 @@ class DeviceHeader extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                      const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
                   decoration: BoxDecoration(
                     color: const Color(0xFF141416),
                     borderRadius: BorderRadius.circular(20),
@@ -120,18 +121,18 @@ class DeviceHeader extends ConsumerWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 5),
+                      const SizedBox(width: 4),
                       Text(
                         stateText,
                         style: const TextStyle(
-                          fontSize: 11,
+                          fontSize: 10.5,
                           fontWeight: FontWeight.w500,
                           color: Color(0xFFA1A1AA),
                         ),
                       ),
-                      const SizedBox(width: 2),
+                      const SizedBox(width: 1),
                       const Icon(Icons.arrow_drop_down,
-                          size: 16, color: Color(0xFFA1A1AA)),
+                          size: 15, color: Color(0xFFA1A1AA)),
                     ],
                   ),
                 ),
@@ -144,12 +145,12 @@ class DeviceHeader extends ConsumerWidget {
                     backgroundColor: const Color(0xFF141416),
                     foregroundColor: const Color(0xFFA1A1AA),
                     side: const BorderSide(color: Color(0xFF27272A)),
-                    minimumSize: const Size(32, 32),
-                    padding: const EdgeInsets.all(4),
+                    minimumSize: const Size(28, 28),
+                    padding: const EdgeInsets.all(3),
                   ),
                   icon: Icon(
                     showStrip ? Icons.expand_less : Icons.expand_more,
-                    size: 18,
+                    size: 16,
                   ),
                   onPressed: onToggleStrip,
                 ),
@@ -167,10 +168,10 @@ class DeviceHeader extends ConsumerWidget {
                         ? const Color(0xFFF97316)
                         : const Color(0xFF27272A),
                   ),
-                  minimumSize: const Size(32, 32),
-                  padding: const EdgeInsets.all(4),
+                  minimumSize: const Size(28, 28),
+                  padding: const EdgeInsets.all(3),
                 ),
-                icon: const Icon(Icons.power_settings_new, size: 18),
+                icon: const Icon(Icons.power_settings_new, size: 16),
                 onPressed: () {
                   ref.read(deviceStateProvider.notifier).setPower(!isPowerOn);
                 },
