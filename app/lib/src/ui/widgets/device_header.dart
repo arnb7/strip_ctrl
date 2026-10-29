@@ -56,10 +56,10 @@ class DeviceHeader extends ConsumerWidget {
                 child: const Icon(Icons.bolt, size: 20, color: Colors.white),
               ),
               const SizedBox(width: 10),
-              Column(
+              const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
                     'strip_ctrl',
                     style: TextStyle(

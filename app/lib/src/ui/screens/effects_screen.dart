@@ -233,8 +233,8 @@ class _EffectsScreenState extends ConsumerState<EffectsScreen> {
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: Colors.cyan.withOpacity(0.3)),
                     ),
-                    child: Row(
-                      children: const [
+                    child: const Row(
+                      children: [
                         Icon(Icons.info_outline,
                             size: 16, color: Colors.cyanAccent),
                         SizedBox(width: 8),
@@ -308,8 +308,8 @@ class _EffectsScreenState extends ConsumerState<EffectsScreen> {
                       border: Border.all(
                           color: const Color(0xFFF97316).withOpacity(0.35)),
                     ),
-                    child: Row(
-                      children: const [
+                    child: const Row(
+                      children: [
                         Icon(Icons.bolt, size: 16, color: Color(0xFFF97316)),
                         SizedBox(width: 8),
                         Expanded(

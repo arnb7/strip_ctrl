@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,7 +32,6 @@ class _MusicScreenState extends ConsumerState<MusicScreen>
 
   final List<double> _equalizerBars = List<double>.filled(28, 0.08);
   double _simPhase = 0.0;
-  int _beatCount = 0;
   int _colorIndex = 0;
 
   double _rollingBassAvg = 0.2;
@@ -180,7 +178,6 @@ class _MusicScreenState extends ConsumerState<MusicScreen>
 
     if (isBeat) {
       _lastBeatTime = now;
-      _beatCount++;
       _colorIndex = (_colorIndex + 1) % _duocoColors.length;
     }
 
@@ -253,10 +250,10 @@ class _MusicScreenState extends ConsumerState<MusicScreen>
         padding: const EdgeInsets.fromLTRB(0, 12, 0, 80),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: Row(
-                children: const [
+                children: [
                   Icon(Icons.waves, size: 18, color: Color(0xFFF97316)),
                   SizedBox(width: 8),
                   Text(

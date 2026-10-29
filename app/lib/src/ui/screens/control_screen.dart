@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:led_core/led_core.dart';
 import '../../providers/device_state_provider.dart';
-import '../../providers/transport_provider.dart';
 import '../widgets/hsv_color_wheel.dart';
 
 class ControlScreen extends ConsumerStatefulWidget {
@@ -20,7 +18,7 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
   final TextEditingController _hexController = TextEditingController();
   final List<Color> _recents = [];
   List<Color> _photoColors = [];
-  bool _usePerceptualBrightness = false;
+  final bool _usePerceptualBrightness = false;
   bool _showSliders = false;
 
   // 16 Workspace2 Swatches
@@ -218,9 +216,9 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
+                        children: [
                           Row(
                             children: [
                               Icon(Icons.wb_sunny_outlined,
@@ -335,8 +333,8 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: const [
+                          const Row(
+                            children: [
                               Icon(Icons.water_drop_outlined,
                                   size: 18, color: Color(0xFFF97316)),
                               SizedBox(width: 8),
@@ -391,16 +389,18 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
                       if (!_showSliders) ...[
                         // HSV Color Wheel (compact 220px to leave plenty of drag/scroll margins)
                         Center(
-                          child: SizedBox(
-                            width: 220,
-                            height: 220,
-                            child: HsvColorWheel(
-                              currentColor: currentColor,
-                              power: state.power,
-                              onColorChanged: (c) {
-                                _applyColor(c, remember: false);
-                              },
-                              onTogglePower: () => notifier.togglePower(),
+                          child: RepaintBoundary(
+                            child: SizedBox(
+                              width: 220,
+                              height: 220,
+                              child: HsvColorWheel(
+                                currentColor: currentColor,
+                                power: state.power,
+                                onColorChanged: (c) {
+                                  _applyColor(c, remember: false);
+                                },
+                                onTogglePower: () => notifier.togglePower(),
+                              ),
                             ),
                           ),
                         ),
@@ -539,10 +539,14 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              runSpacing: 8,
+                              spacing: 8,
                               children: [
                                 Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     const Text(
                                       'Hardware: ',
@@ -589,8 +593,8 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
                                     ),
                                   ],
                                 ),
-                                Wrap(
-                                  spacing: 4,
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     'GRB',
                                     'RGB',
@@ -598,27 +602,30 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
                                     'BGR',
                                   ].map((order) {
                                     final isSel = state.pinOrder == order;
-                                    return InkWell(
-                                      onTap: () => notifier.setPinOrder(order),
-                                      borderRadius: BorderRadius.circular(6),
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8, vertical: 4),
-                                        decoration: BoxDecoration(
-                                          color: isSel
-                                              ? const Color(0xFFF97316)
-                                              : const Color(0xFF27272A),
-                                          borderRadius:
-                                              BorderRadius.circular(6),
-                                        ),
-                                        child: Text(
-                                          order,
-                                          style: TextStyle(
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.bold,
+                                    return Padding(
+                                      padding: const EdgeInsets.only(left: 4),
+                                      child: InkWell(
+                                        onTap: () => notifier.setPinOrder(order),
+                                        borderRadius: BorderRadius.circular(6),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 7, vertical: 4),
+                                          decoration: BoxDecoration(
                                             color: isSel
-                                                ? Colors.white
-                                                : const Color(0xFFA1A1AA),
+                                                ? const Color(0xFFF97316)
+                                                : const Color(0xFF27272A),
+                                            borderRadius:
+                                                BorderRadius.circular(6),
+                                          ),
+                                          child: Text(
+                                            order,
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.bold,
+                                              color: isSel
+                                                  ? Colors.white
+                                                  : const Color(0xFFA1A1AA),
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -837,8 +844,8 @@ class _ControlScreenState extends ConsumerState<ControlScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: const [
+                        const Row(
+                          children: [
                             Icon(Icons.wb_sunny_outlined,
                                 size: 18, color: Color(0xFFF97316)),
                             SizedBox(width: 8),

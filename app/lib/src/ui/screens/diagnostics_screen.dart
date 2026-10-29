@@ -228,33 +228,39 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Protocol Verification',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
-                      ),
-                      Text(
-                        '25 mandatory ELK test vectors (§3 & §4)',
-                        style: TextStyle(fontSize: 12, color: Colors.white54),
-                      ),
-                    ],
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Protocol Verification',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          '25 mandatory ELK test vectors (§3 & §4)',
+                          style: TextStyle(fontSize: 11, color: Colors.white54),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
+                  const SizedBox(width: 8),
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.tealAccent,
                       foregroundColor: Colors.black,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
+                          horizontal: 10, vertical: 8),
+                      visualDensity: VisualDensity.compact,
                     ),
-                    icon: const Icon(Icons.verified, size: 16),
+                    icon: const Icon(Icons.verified, size: 14),
                     label: const Text('Run 25 Vectors',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 12)),
+                            fontWeight: FontWeight.bold, fontSize: 11)),
                     onPressed: () => _showSelfTestModal(context),
                   ),
                 ],

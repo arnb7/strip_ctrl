@@ -206,32 +206,43 @@ class _StripPainter extends CustomPainter {
     final count = math.max(6, (usable / gap).floor());
     final startX = pad + 8 + (usable - (count - 1) * gap) / 2;
 
+    final bloomPaint = Paint()
+      ..isAntiAlias = true
+      ..color = color.withOpacity(0.35);
+    final dotPaint = Paint()
+      ..isAntiAlias = true
+      ..color = color;
+    final glintPaint = Paint()
+      ..isAntiAlias = true
+      ..color = Colors.white.withOpacity(0.40);
+    final offDotPaint = Paint()
+      ..isAntiAlias = true
+      ..color = const Color(0xFF27272A);
+    final offGlintPaint = Paint()
+      ..isAntiAlias = true
+      ..color = Colors.white.withOpacity(0.06);
+
+    final isGlow = power && (color.r + color.g + color.b > 0.05);
+
     for (int i = 0; i < count; i++) {
       final dx = startX + i * gap;
       final center = Offset(dx, cy);
 
-      if (power && (color.r + color.g + color.b > 0.05)) {
-        // Dot Bloom Glow
-        final bloomPaint = Paint()
-          ..color = color.withValues(alpha: 0.6)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
-        canvas.drawCircle(center, dotR + 3, bloomPaint);
+      if (isGlow) {
+        // Dot Bloom Glow (hardware-accelerated concentric anti-aliased circles)
+        canvas.drawCircle(center, dotR + 3.5, bloomPaint);
 
         // Core LED Dot
-        final dotPaint = Paint()..color = color;
         canvas.drawCircle(center, dotR, dotPaint);
 
         // Specular Glint
-        final glintPaint = Paint()
-          ..color = Colors.white.withValues(alpha: 0.35);
-        canvas.drawCircle(Offset(dx - dotR * 0.3, cy - dotR * 0.3), dotR * 0.32, glintPaint);
+        canvas.drawCircle(
+            Offset(dx - dotR * 0.3, cy - dotR * 0.3), dotR * 0.32, glintPaint);
       } else {
         // Off LED Dot
-        final offDotPaint = Paint()..color = const Color(0xFF27272A);
         canvas.drawCircle(center, dotR, offDotPaint);
-        final glintPaint = Paint()
-          ..color = Colors.white.withValues(alpha: 0.05);
-        canvas.drawCircle(Offset(dx - dotR * 0.3, cy - dotR * 0.3), dotR * 0.3, glintPaint);
+        canvas.drawCircle(Offset(dx - dotR * 0.3, cy - dotR * 0.3), dotR * 0.3,
+            offGlintPaint);
       }
     }
   }

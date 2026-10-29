@@ -186,11 +186,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: const Color(0xFF27272A)),
               ),
-              child: Column(
+              child: const Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Icon(Icons.bolt, size: 16, color: Color(0xFFF97316)),
                       SizedBox(width: 6),
                       Text(
@@ -208,8 +208,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 6),
-                  const Text(
+                  SizedBox(height: 6),
+                  Text(
                     '100% offline · zero telemetry · zero internet permissions',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 11, color: Color(0xFF71717A)),
